@@ -7,7 +7,7 @@ const db = new Database('wadsongs.db');
 
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = 4000;
 
 // Search for artists from the wadsongs database
 app.get('/billboard/artist/:artist', (req, res) => {
