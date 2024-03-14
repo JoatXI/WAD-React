@@ -1,6 +1,8 @@
 import React from "react";
+import FindArtist from "./FindArtist.js";
+import DisplaySongs from "./DisplaySongs.js";
 
-function SearchArtist({name, defaultArtist}) {
+function SearchArtist({defaultArtist}) {
     const [name, setArtist] = React.useState("");
     const [songs, setSongs] = React.useState([]);
 
@@ -14,7 +16,7 @@ function SearchArtist({name, defaultArtist}) {
     );
     
     function updateArtist(currName) {
-        foundArtist = currName
+        const foundArtist = currName
         setArtist(foundArtist);
 
         ajaxSearch(foundArtist);

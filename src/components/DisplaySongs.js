@@ -8,3 +8,5 @@ function DisplaySongs({songs}) {
         </div>
     )
 }
+
+export default DisplaySongs;
