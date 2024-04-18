@@ -7,19 +7,32 @@ import Login from "./Login";
 function SearchArtist() {
     const [name, setArtist] = React.useState("");
     const [songs, setSongs] = React.useState([]);
-    const [login, setLogin] = React.useState("");
-    checkLogin();
+    const [login, setLogin] = React.useState(null);
+    
+    React.useEffect(() => {
+        checkLogin();
+    },[]);
 
     const songsHtml = songs.map( currSong => <li key={currSong.id}>Artist Name: {currSong.artist}, Song Title: {currSong.title}, Release Year: {currSong.year}</li>);
     
-    return (
-        <div>
-            <Logout logoutResult={logoutSession} />
+    /*if you're logged in 
+        html = components to be displayed when you're logged in
+    else
+        html = components to be displayed when you're logged out*/
+
+    if (login != null) {
+        return (
+            <div>
+                <Logout logoutResult={logoutSession} />
+                <FindArtist artistSearchResult={updateArtist} name={name} />
+                <DisplaySongs songs={songsHtml} />
+            </div>
+        );
+    } else {
+        return (
             <Login loginResult={loginSession} />
-            <FindArtist artistSearchResult={updateArtist} name={name} />
-            <DisplaySongs songs={songsHtml} />
-        </div>
-    );
+        )
+    }
     
     function updateArtist(currName) {
         const foundArtist = currName
@@ -33,7 +46,6 @@ function SearchArtist() {
     }
 
     function loginSession(loginDetails) {
-        setLogin(loginDetails);
 
         ajaxLogin(loginDetails);
     }
@@ -48,15 +60,8 @@ function SearchArtist() {
     
             const userSessions = await res.json();
 
-            if (userSessions.username == null) {
-                document.getElementById('login-form').style.display = 'flex';
-                document.getElementById('artist-search').style.display = 'none';
-                document.getElementById('logout').style.display = 'none';
-            } else if (userSessions.username != null) {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('artist-search').style.display = 'flex';
-                document.getElementById('logout').style.display = 'flex';
-            }
+            setLogin(userSessions.username);
+
     
         } catch (e) {
             alert(`Error occured: ${e}`);
@@ -77,15 +82,8 @@ function SearchArtist() {
                 alert('Invalid login details');
             } else if (res.status == 200) {
                 alert(`Logged in as ${details.username}`);
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById("logout").style.display = "flex";
-                document.getElementById('artist-search').style.display = 'flex';
-
-                const node = document.createElement("p");
-                const loginText = document.createTextNode(`Logged in as ${details.username}`);
-
-                node.appendChild(loginText);
-                document.getElementById("session-result").appendChild(node);
+                
+                setLogin(details.username);
             }
     
         } catch (e) {
@@ -114,10 +112,8 @@ function SearchArtist() {
     
             if(res.status == 200) {
                 alert("You have been logged out");
-                document.getElementById("login-form").style.display = "block";
-                document.getElementById("logout").style.display = "none";
-                document.getElementById("artist-search").style.display = "none";
-                document.getElementById("results").style.display = "none";
+                
+                setLogin(null);
             }
     
         } catch (e) {
