@@ -8,7 +8,7 @@ function FindArtist({artistSearchResult}) {
     }
 
     return (
-        <div>
+        <div id='artist-search'>
             <h1>Search For Your Favourite Artist Song</h1>
             <h2>Enter Artist: </h2>
             <input id="artistName" />
